@@ -1,0 +1,13 @@
+# Backend
+backend/gcp-key.json
+backend/__pycache__/
+backend/.env
+backend/gcp-key.json
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Geral
+.env

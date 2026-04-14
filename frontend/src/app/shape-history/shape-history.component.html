@@ -1,0 +1,165 @@
+<!-- =========================================================
+     🔹 LAYOUT PRINCIPAL
+     =========================================================
+     Estrutura:
+     - Sidebar (filtros + lista de versões)
+     - Área do mapa
+     ========================================================= -->
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo-mark">▲</span>
+      <span class="logo-text">Histórico de Shapes</span>
+    </div>
+
+    <!-- Busca de Linha -->
+    <div class="search-block">
+      <label class="field-label">Buscar linha</label>
+      <div class="search-wrap">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Ex: 348, 691, 774..."
+          [formControl]="searchCtrl"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <!-- Loading / Error -->
+    <div class="loading-row" *ngIf="loading">
+      <span class="spinner"></span> Buscando shapes...
+    </div>
+    <div class="error-row" *ngIf="error">{{ error }}</div>
+
+    <!-- Resultado -->
+    <ng-container *ngIf="historyData && !loading">
+
+      <div class="route-info">
+        <span class="route-badge">{{ historyData.route_short_name }}</span>
+        <span class="route-name">{{ historyData.ida[0]?.route_long_name ?? historyData.volta[0]?.route_long_name }}</span>
+        <span class="route-total">{{ historyData.total }} versão(ões)</span>
+      </div>
+
+      <!-- Tabs Ida / Volta -->
+      <div class="tabs">
+        <button class="tab" [class.active]="activeTab === '0'" (click)="setTab('0')">
+          Ida <span class="tab-count">{{ idaCount }}</span>
+        </button>
+        <button class="tab" [class.active]="activeTab === '1'" (click)="setTab('1')">
+          Volta <span class="tab-count">{{ voltaCount }}</span>
+        </button>
+      </div>
+
+      <!-- Lista de versões -->
+      <div class="section-label">Versões</div>
+      <div class="version-list">
+        <div
+          class="version-card"
+          *ngFor="let v of currentVersions"
+          [class.active]="selectedVersion?.shape_id === v.shape_id"
+          [class.vigente]="v.vigente"
+          (click)="selectVersion(v)"
+        >
+      <div class="vc-top">
+  <span class="vc-id">{{ v.shape_id }}</span>
+
+  <div class="vc-badges-vertical">
+    <span class="badge-vigente" *ngIf="v.vigente">vigente</span>
+
+    <span
+  class="badge-service"
+  *ngIf="v.service_id"
+  [ngClass]="{
+    'd-reg': v.service_id?.startsWith('D_'),
+    's-reg': v.service_id?.startsWith('S_'),
+    'excep': v.service_id?.startsWith('EXCEP')
+  }"
+>
+  {{ v.service_id }}
+</span>
+  </div>
+</div>
+          <div class="vc-meta">
+            <span>início: {{ formatDate(v.feed_start_date) }}</span>
+            <span *ngIf="!v.vigente">fim: {{ formatDate(v.feed_end_date) }}</span>
+          </div>
+          <div class="vc-pts">
+            {{ v.coordinates.length }} pontos
+            <span class="geom-warn" *ngIf="v.geom_warning" title="Geometria incompleta na tabela shapes_geom">⚠ stub</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparação -->
+      <div class="compare-block" *ngIf="selectedVersion">
+        <label class="field-label">Comparar com</label>
+        <select class="compare-select" (change)="onCompareChange($event, activeTab)">
+          <option value="">— nenhum —</option>
+          <option
+            *ngFor="let v of currentVersions"
+            [value]="v.shape_id"
+            [disabled]="v.shape_id === selectedVersion!.shape_id"
+          >
+            {{ v.shape_id }} · {{ formatDate(v.feed_start_date) }}{{ v.vigente ? ' ★' : '' }}
+          </option>
+        </select>
+      </div>
+
+    </ng-container>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-area">
+
+    <!-- Mapa -->
+    <div class="map-wrap">
+      <div #mapContainer class="map"></div>
+
+      <!-- Legend -->
+      <div class="map-legend" *ngIf="historyData">
+        <div class="leg-item"><span class="leg-line current"></span> shape atual</div>
+        <div class="leg-item" *ngIf="compareVersion"><span class="leg-line compare"></span> shape anterior</div>
+        <div class="leg-item" *ngIf="diffAdded.length"><span class="leg-dot added"></span> adicionado</div>
+        <div class="leg-item" *ngIf="diffRemoved.length"><span class="leg-dot removed"></span> removido</div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="map-empty" *ngIf="!historyData && !loading && !error">
+        <div class="empty-icon">⬡</div>
+        <div class="empty-text">Digite o número da linha e pressione Buscar</div>
+      </div>
+    </div>
+
+    <!-- Diff Panel -->
+    <div class="diff-panel" *ngIf="diffAdded.length || diffRemoved.length">
+      <div class="diff-header">Diff de coordenadas</div>
+      <div class="diff-stats">
+        <div class="stat-card added">
+          <div class="stat-num">{{ diffAdded.length }}</div>
+          <div class="stat-lbl">adicionadas</div>
+        </div>
+        <div class="stat-card removed">
+          <div class="stat-num">{{ diffRemoved.length }}</div>
+          <div class="stat-lbl">removidas</div>
+        </div>
+        <div class="stat-card unchanged">
+          <div class="stat-num">{{ diffUnchanged.length }}</div>
+          <div class="stat-lbl">iguais</div>
+        </div>
+      </div>
+      <div class="diff-scroll">
+        <div class="diff-item added"   *ngFor="let c of diffAdded   | slice:0:30">+ {{ c[0].toFixed(5) }}, {{ c[1].toFixed(5) }}</div>
+        <div class="diff-item removed" *ngFor="let c of diffRemoved | slice:0:30">− {{ c[0].toFixed(5) }}, {{ c[1].toFixed(5) }}</div>
+      </div>
+    </div>
+
+    <div class="diff-panel empty" *ngIf="historyData && !diffAdded.length && !diffRemoved.length">
+      <p>Selecione uma versão anterior para comparar o diff.</p>
+    </div>
+
+  </main>
+</div>

@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap');
+
+:host { display: block; height: 100vh; font-family: 'Syne', sans-serif; }
+
+.shell {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: 100vh;
+  background: #0d0e11;
+  color: #e8e6e0;
+  overflow: hidden;
+}
+
+// ── Sidebar ───────────────────────────────────────────────────
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: #13141a;
+  border-right: 1px solid #2a2b33;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid #2a2b33;
+  flex-shrink: 0;
+}
+
+.logo-mark { font-size: 18px; color: #378ADD; }
+.logo-text  { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }
+
+// ── Search ────────────────────────────────────────────────────
+.search-block { padding: 16px 18px 0; }
+
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b6e7a;
+  margin-bottom: 6px;
+}
+
+.search-wrap { display: flex; }
+
+.search-input {
+  flex: 1;
+  background: #1c1e26;
+  border: 1px solid #2a2b33;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: 'DM Mono', monospace;
+  color: #e8e6e0;
+  outline: none;
+  transition: border-color .15s;
+  &:focus { border-color: #378ADD; }
+  &::placeholder { color: #4a4d58; }
+}
+
+
+
+// ── States ────────────────────────────────────────────────────
+.loading-row, .error-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px; font-size: 12px;
+}
+.loading-row { color: #6b6e7a; }
+.error-row   { color: #E24B4A; }
+
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid #2a2b33; border-top-color: #378ADD;
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Route info ────────────────────────────────────────────────
+.route-info {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 18px; border-bottom: 1px solid #2a2b33;
+}
+.route-badge {
+  font-family: 'DM Mono', monospace; font-size: 20px;
+  font-weight: 500; color: #378ADD;
+}
+.route-name  { font-size: 12px; color: #9a9aa0; line-height: 1.4; }
+.route-total { font-size: 11px; color: #4a4d58; margin-top: 2px; }
+
+// ── Tabs ──────────────────────────────────────────────────────
+.tabs {
+  display: flex; border-bottom: 1px solid #2a2b33;
+}
+.tab {
+  flex: 1; padding: 10px 0; border: none; background: none;
+  font-family: 'Syne', sans-serif; font-size: 13px;
+  color: #6b6e7a; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  &.active { color: #e8e6e0; border-bottom-color: #378ADD; }
+  &:hover:not(.active) { color: #9a9aa0; }
+}
+.tab-count {
+  font-size: 11px; padding: 1px 6px; border-radius: 10px;
+  background: #1c1e26; color: #6b6e7a;
+}
+
+// ── Section label ─────────────────────────────────────────────
+.section-label {
+  padding: 12px 18px 6px;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #6b6e7a;
+}
+
+// ── Version cards ─────────────────────────────────────────────
+.version-list {
+  display: flex; flex-direction: column; gap: 6px; padding: 0 12px;
+}
+.version-card {
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid #2a2b33; background: #1c1e26;
+  cursor: pointer; transition: border-color .15s, background .15s;
+  &:hover { border-color: #378ADD44; background: #1f2130; }
+  &.active { border-color: #378ADD; background: #0f1e30; }
+  &.vigente:not(.active) { border-color: #1D9E7555; }
+}
+.vc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; // 👈 importante
+}
+
+.vc-badges-vertical {
+  display: flex;
+  flex-direction: column; // 👈 empilha
+  align-items: flex-end;  // 👈 alinha à direita
+  gap: 4px;
+}
+
+.vc-id {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 500; color: #c8c6c0;
+}
+.badge-vigente {
+  font-size: 10px; font-weight: 500; padding: 2px 7px;
+  border-radius: 4px; background: #0f3a2a; color: #5DCAA5;
+  border: 1px solid #1D9E7555; letter-spacing: 0.04em;
+}
+.vc-meta { font-size: 11px; color: #6b6e7a; display: flex; gap: 8px; flex-wrap: wrap; }
+.vc-pts  { font-size: 10px; color: #4a4d58; margin-top: 2px; font-family: 'DM Mono', monospace; }
+.geom-warn {
+  margin-left: 6px;
+  font-size: 10px;
+  color: #E2A84B;
+  background: #2a1f00;
+  border: 1px solid #E2A84B44;
+  border-radius: 3px;
+  padding: 1px 5px;
+  letter-spacing: 0.03em;
+}
+
+// ── Compare ───────────────────────────────────────────────────
+.compare-block { padding: 14px 18px 0; }
+
+.compare-select {
+  width: 100%; background: #1c1e26; border: 1px solid #2a2b33;
+  border-radius: 6px; padding: 8px 10px; font-size: 12px;
+  font-family: 'DM Mono', monospace; color: #e8e6e0;
+  outline: none; cursor: pointer;
+  &:focus { border-color: #E24B4A; }
+  option:disabled { color: #4a4d58; }
+}
+
+// ── Main ──────────────────────────────────────────────────────
+.main-area { display: flex; flex-direction: column; overflow: hidden; }
+
+.map-wrap  { flex: 1; position: relative; min-height: 0; }
+.map       { width: 100%; height: 100%; }
+
+.map-legend {
+  position: absolute; bottom: 24px; left: 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  background: rgba(13,14,17,.88); border: 1px solid #2a2b33;
+  border-radius: 8px; padding: 10px 14px; z-index: 999;
+}
+.leg-item  { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #9a9aa0; }
+.leg-line  { display: inline-block; width: 20px; height: 3px; border-radius: 2px;
+  &.current { background: #378ADD; }
+  &.compare { background: #E24B4A; opacity: .7; }
+}
+.leg-dot   { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  &.added   { background: #1D9E75; }
+  &.removed { background: #E24B4A; }
+}
+
+.map-empty {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  pointer-events: none;
+}
+.empty-icon { font-size: 36px; color: #2a2b33; }
+.empty-text { font-size: 13px; color: #4a4d58; }
+
+// ── Diff panel ────────────────────────────────────────────────
+.diff-panel {
+  border-top: 1px solid #2a2b33; background: #13141a;
+  padding: 14px 16px; max-height: 200px; overflow-y: auto; flex-shrink: 0;
+  &.empty {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #4a4d58; min-height: 52px;
+    p { margin: 0; }
+  }
+}
+.diff-header {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: #6b6e7a; margin-bottom: 10px;
+}
+.diff-stats { display: flex; gap: 10px; margin-bottom: 12px; }
+
+.stat-card {
+  flex: 1; border-radius: 6px; padding: 8px 10px; border: 1px solid;
+  &.added     { background: #0a2018; border-color: #1D9E7544; }
+  &.removed   { background: #200a0a; border-color: #E24B4A44; }
+  &.unchanged { background: #1a1c22; border-color: #2a2b33;   }
+}
+.stat-num {
+  font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; line-height: 1;
+  .added &   { color: #5DCAA5; }
+  .removed & { color: #E24B4A; }
+  .unchanged & { color: #6b6e7a; }
+}
+.stat-lbl { font-size: 10px; color: #4a4d58; margin-top: 2px; }
+
+.diff-scroll { display: flex; flex-direction: column; gap: 3px; }
+.diff-item {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  padding: 4px 8px; border-radius: 4px;
+  &.added   { background: #0a2018; color: #5DCAA5; }
+  &.removed { background: #200a0a; color: #E24B4A; }
+}
+.vc-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.badge-service {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+/* Tipos */
+.badge-service.d-reg,
+.badge-service.s-reg {
+  background: #0f3a2a;
+  color: #5DCAA5;
+  border-color: #1D9E7555;
+}
+
+.badge-service.excep {
+  background: #3a1616;
+  color: #ff8b8b;
+  border-color: #E24B4A55;
+}
