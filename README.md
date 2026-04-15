@@ -269,6 +269,7 @@ Para deploy manual:
 ---
 
 ## 📦 Dependências
+npm install leaflet @types/leaflet
 
 ### Backend (Python)
 
@@ -303,8 +304,7 @@ Projeto desenvolvido para a **Rio Ônibus** — entidade que representa as empre
 
 ---
 
-#Dependencias
-npm install leaflet @types/leaflet
+
 
 ## 📄 Licença
 
