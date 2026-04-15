@@ -304,7 +304,8 @@ Projeto desenvolvido para a **Rio Ônibus** — entidade que representa as empre
 ---
 
 #Dependencias
+npm install leaflet @types/leaflet
+
 ## 📄 Licença
 
-npm install leaflet @types/leaflet
 Projeto de uso interno desenvolvido para Rio Ônibus. Todos os direitos reservados.
